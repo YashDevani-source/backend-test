@@ -12,19 +12,21 @@ export const createUserController = async (req, res) => {
     }
 
     const existingUser = await User.findOne({
-        $or: [{username}, {email}]
+        $or: [{username}, {email}],
     })
+
     if(existingUser){
+        console.log(existingUser)
         throw new ApiError(400, "User Already exist")
     }
+    
     const user = await User.create({
         username, email, password
     })
-    user.save({validateBeforeSave: false})
 
-    return res.status(200).json(new ApiResponse(200, "User Created Succesfully", user))
+    return res.status(201).json(new ApiResponse(201, "User Created Succesfully", user))
     } catch (error) {
-        throw new ApiError(400, "Error while creating User")
+        throw new ApiError(400, "Error while creating User", error)
         if(process.env.NODE_ENV = 'developement') {
             console.log('Error While Creating User: ', error)
         }
@@ -35,7 +37,7 @@ export const getAllUserController = async (req, res) => {
     try {
         const users = await User.find().select('-password')
 
-    if(!user){
+    if(!users){
         throw new ApiError(400, "Error while Getting All users")
     }
 
@@ -64,7 +66,7 @@ export const getUserByIdController = async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, "User get successfully", user))
     } catch (error) {
-        throw new ApiError(400, "Error while getting User")
+        throw new ApiError(400, "Error while getting User", error)
 
         if(process.env.NODE_ENV = 'developement'){
             console.log('Error while getting User ', error)
@@ -85,7 +87,7 @@ export const updateUserController = async (req, res) => {
             username,
             password,
             email
-        }).select('-password')
+        }, { new: true }).select('-password')
 
         if(!newUser) {
             throw new ApiError(400, "Id is correct")
@@ -94,7 +96,10 @@ export const updateUserController = async (req, res) => {
         return res.status(200).json(new ApiResponse(200, "User Updated success fully", newUser))
 
     } catch (error) {
-        
+        if(process.env.NODE_ENV === 'development'){
+            console.log('Error while updating user ', error)
+        }
+        throw new ApiError(400,  "Error while updating user", error)
     }
 }
 
@@ -114,7 +119,7 @@ export const deleteUserByIdController = async (req, res) => {
 
         return res.status(200).json(new ApiResponse(200, "User deleted Successfully"))
     } catch (error) {
-        throw new ApiError(400, "Error while deleting user")
+        throw new ApiError(400, "Error while deleting user", error)
         if(process.env.NODE_ENV='developement'){
             console.log("Error while deleting user")
         }

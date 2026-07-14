@@ -16,7 +16,7 @@ connectDb()
                 console.log("Server is running on PORT: ", PORT)
             })
         } catch (error) {
-            throw new ApiError(400, "Error while running server")
+            throw new ApiError(400, "Error while running server", error)
             if(process.env.NODE_ENV==='developement'){
             console.log("Error while Running Server")
         }

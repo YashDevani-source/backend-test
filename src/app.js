@@ -8,6 +8,6 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api',userRoute)
-app.use('api/health', healthRoute)
+app.use('/api/health', healthRoute)
 
 export default app
