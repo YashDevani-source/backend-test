@@ -1,5 +1,4 @@
 
-import { use } from 'react'
 import User from '../models/user.models.js'
 import ApiError from '../utils/api-error.js'
 import ApiResponse from '../utils/api-response.js'
@@ -25,7 +24,7 @@ export const createUserController = async (req, res) => {
 
     return res.status(200).json(new ApiResponse(200, "User Created Succesfully", user))
     } catch (error) {
-        throw new ApiError(400, "Error while creating User", data)
+        throw new ApiError(400, "Error while creating User")
         if(process.env.NODE_ENV = 'developement') {
             console.log('Error While Creating User: ', error)
         }
